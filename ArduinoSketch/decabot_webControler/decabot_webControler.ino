@@ -7,8 +7,8 @@
  */
 
 #include <ESP8266WiFi.h>
-#include <ESPAsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <ESPAsyncTCP.h>        //tested on 1.2.4 from https://github.com/dvarrel/ESPAsyncTCP
+#include <ESPAsyncWebServer.h>  //tested on https://github.com/lacamera/ESPAsyncWebServer
 #include <DNSServer.h>
 #include <Servo.h>
 #include <Adafruit_GFX.h>       // tested on 1.11.10
@@ -25,6 +25,9 @@ const char *ssid = "MeuDecabot";
 const char *password = "";
 Servo servo0;
 Servo servo6;
+
+//sounds
+const int decabotMusic[4][3]{ { 494, 2, 3 }, { 554, 2, 4 }, { 440, 2, 5 }, { 880, 1, 6 } };
 
 DNSServer dnsServer;
 const byte DNS_PORT = 53;
@@ -247,6 +250,11 @@ void setup() {
 
   server.onNotFound(notFound);
   server.begin();
+  for (int i = 0; i < 4; i++) {
+    tone(buzzer, decabotMusic[i][0], decabotMusic[i][1] * 200);
+    delay(decabotMusic[i][1] * 200);
+    noTone(buzzer);
+  }
 }
 
 void loop() {
